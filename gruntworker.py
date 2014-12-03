@@ -46,9 +46,9 @@ def fetch_origin():
 def update_master(to_commitish=b'FETCH_HEAD'):
     log("Setting local master to {0}...".format(to_commitish.decode('utf8', 'replace')))
     try:
-        run_expecting_success([b'git', b'checkout', b'-f', to_commitish])
+        run_expecting_success([b'git', b'checkout', b'-q', b'-f', to_commitish])
         run_expecting_success([b'git', b'branch', b'-f', b'master', to_commitish])
-        run_expecting_success([b'git', b'checkout', b'-f', b'master'])
+        run_expecting_success([b'git', b'checkout', b'-q', b'-f', b'master'])
     except CalledProcessError:
         log("Error setting local master to {0}!".format(to_commitish))
         reset_to_master_and_die()
