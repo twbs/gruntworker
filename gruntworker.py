@@ -2,8 +2,7 @@
 # coding=utf-8
 
 from sys import exit
-from os import devnull as DEV_NULL
-from subprocess import check_call, check_output, CalledProcessError
+from subprocess import check_call, check_output, DEVNULL, CalledProcessError
 from shutil import rmtree
 from datetime import datetime
 
@@ -16,8 +15,7 @@ def log(*args):
 
 def run_expecting_success(cmd):
     log("\trunning:", b' '.join(cmd).decode('utf8', 'replace'))
-    with open(DEV_NULL) as void:
-        check_call(cmd, stdin=void)
+    check_call(cmd, stdin=DEVNULL)
 
 
 def run_for_output(cmd):
