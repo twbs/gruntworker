@@ -120,7 +120,7 @@ def main():
             log("No files modified by grunt; Done.")
             return
         run_expecting_success([b'git', b'add', b'--'] + modified_files)
-        run_expecting_success([b'git', b'commit', b'-m', b"automatic grunt dist"])
+        run_expecting_success([b'git', b'commit', b'-m', b"automatic `grunt dist`"])
         push_or_err()
     except Exception:  # pylint: disable=W0703
         log("Resetting master branch & checkout back to commit {} ...".format(post_fetch_commit_sha))
