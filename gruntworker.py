@@ -83,7 +83,7 @@ def get_head_commit_sha():
 def grunt_or_err():
     log("Grunting...")
     try:
-        run_expecting_success([b'grunt', b'dist'])
+        run_expecting_success([b'grunt', b'dist', b'clean:docs', b'copy:docs'])
     except CalledProcessError:
         log("Error while grunting!")
         raise
