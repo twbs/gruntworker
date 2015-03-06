@@ -33,6 +33,7 @@ WORKDIR /git-repo
 
 RUN ["git", "remote", "set-url",           "origin", "https://github.com/twbs/bootstrap.git"]
 RUN ["git", "remote", "set-url", "--push", "origin", "git@github.com:twbs/bootstrap.git"]
+RUN ["git", "config", "core.fileMode", "false"]
 RUN ["git", "config", "user.name", "Bootstrap's Grunt bot"]
 RUN ["git", "config", "user.email", "twbs-grunt@users.noreply.github.com"]
 RUN ["npm", "install"]
