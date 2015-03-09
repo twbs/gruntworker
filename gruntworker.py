@@ -3,7 +3,8 @@
 
 from sys import exit  # pylint: disable=W0622
 from subprocess import check_call, check_output, DEVNULL, CalledProcessError
-from shutil import rmtree
+from shutil import copy, rmtree
+from os import remove
 from os.path import join as pathjoin
 from datetime import datetime
 
@@ -59,9 +60,16 @@ def update_master(to_commitish=b'FETCH_HEAD'):
 
 def update_npm():
     try:
+        copy(SHRINKWRAP_FILEPATH, SHRINKWRAP_FILENAME)
+    except (OSError, IOError):
+        log("Error copying shrinkwrap file into place!")
+        log("Failed!")
+        exit(1)
+
+    try:
         log("Pruning unnecessary npm modules...")
         run_expecting_success([b'npm', b'prune'])
-        log("Installing/updating npm modules per package.json ...")
+        log("Installing/updating npm modules per npm-shrinkwrap.json ...")
         run_expecting_success([b'npm', b'install'])
     except CalledProcessError:
         log("Error performing npm operations!")
@@ -74,6 +82,11 @@ def update_npm():
             log("Successfully purged node_modules.")
         log("Failed!")
         exit(1)
+    finally:
+        try:
+            remove(SHRINKWRAP_FILENAME)
+        except:
+            log("Error deleting copy of shrinkwrap file!")
 
 
 def get_head_commit_sha():
