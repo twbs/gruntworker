@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from sys import exit
+from sys import exit  # pylint: disable=W0622
 from subprocess import check_call, check_output, DEVNULL, CalledProcessError
 from shutil import rmtree
 from datetime import datetime
