@@ -85,7 +85,7 @@ def update_npm():
     finally:
         try:
             remove(SHRINKWRAP_FILENAME)
-        except:
+        except Exception:
             log("Error deleting copy of shrinkwrap file!")
 
 
