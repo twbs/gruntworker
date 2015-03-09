@@ -4,7 +4,12 @@
 from sys import exit  # pylint: disable=W0622
 from subprocess import check_call, check_output, DEVNULL, CalledProcessError
 from shutil import rmtree
+from os.path import join as pathjoin
 from datetime import datetime
+
+SHRINKWRAP_FILENAME = 'npm-shrinkwrap.json'
+SHRINKWRAP_DIR = 'test-infra'
+SHRINKWRAP_FILEPATH = pathjoin(SHRINKWRAP_DIR, SHRINKWRAP_FILENAME)
 
 
 def log(*args):
