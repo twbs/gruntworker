@@ -1,5 +1,5 @@
 # Written against Docker v1.3.1
-FROM node:0.10
+FROM node:0.12
 MAINTAINER Chris Rebert <code@rebertia.com>
 
 WORKDIR /
