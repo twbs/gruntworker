@@ -1,2 +1,2 @@
 #!/bin/sh
-flock -xn /var/lock/gruntworker /app/gruntworker.py
+flock -xn /var/lock/gruntworker /opt/gruntworker/gruntworker.py

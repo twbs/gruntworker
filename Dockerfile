@@ -13,8 +13,9 @@ RUN ["npm", "install", "-g", "grunt-cli"]
 
 RUN ["useradd", "gruntworker"]
 
-ADD gruntworker.py /app/gruntworker.py
-ADD gruntworker.sh /app/gruntworker.sh
+RUN ["mkdir", "-p", "/opt/gruntworker"]
+ADD gruntworker.py /opt/gruntworker/gruntworker.py
+ADD gruntworker.sh /opt/gruntworker/gruntworker.sh
 ADD git-repo /git-repo
 
 # Setup SSH keys
@@ -38,4 +39,4 @@ RUN ["git", "config", "user.name", "Bootstrap's Grunt bot"]
 RUN ["git", "config", "user.email", "twbs-grunt@users.noreply.github.com"]
 RUN ["npm", "install"]
 
-ENTRYPOINT ["/app/gruntworker.sh"]
+ENTRYPOINT ["/opt/gruntworker/gruntworker.sh"]
