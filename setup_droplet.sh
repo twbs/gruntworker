@@ -1,6 +1,6 @@
 #!/bin/bash
 # Step 0.0: Put SSH keys in ./ssh
-# Step 0.1: Checkout git repo to ./git-repo
+# Step 0.1: Checkout git repo to /opt/gruntworker/git-repo
 
 set -e -x
 

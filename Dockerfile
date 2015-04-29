@@ -16,7 +16,7 @@ RUN ["useradd", "gruntworker"]
 RUN ["mkdir", "-p", "/opt/gruntworker"]
 ADD gruntworker.py /opt/gruntworker/gruntworker.py
 ADD gruntworker.sh /opt/gruntworker/gruntworker.sh
-ADD git-repo /git-repo
+RUN ["mkdir", "/opt/gruntworker/git-repo"]
 
 # Setup SSH keys
 ADD ssh/id_rsa.pub /home/gruntworker/.ssh/id_rsa.pub
@@ -24,13 +24,14 @@ ADD ssh/id_rsa /home/gruntworker/.ssh/id_rsa
 RUN ssh-keyscan -t rsa github.com > /home/gruntworker/.ssh/known_hosts
 
 # Fix permissions
-RUN ["chown", "-R", "gruntworker:gruntworker", "/git-repo"]
+RUN ["chown", "-R", "gruntworker:gruntworker", "/opt/gruntworker/git-repo"]
 RUN ["chown", "-R", "gruntworker:gruntworker", "/home/gruntworker"]
 # chmod must happen AFTER chown, due to https://github.com/docker/docker/issues/6047
 RUN ["chmod", "-R", "go-rwx", "/home/gruntworker/.ssh"]
 
+VOLUME /opt/gruntworker/git-repo
 USER gruntworker
-WORKDIR /git-repo
+WORKDIR /opt/gruntworker/git-repo
 
 RUN ["git", "remote", "set-url",           "origin", "https://github.com/twbs/bootstrap.git"]
 RUN ["git", "remote", "set-url", "--push", "origin", "git@github.com:twbs/bootstrap.git"]
