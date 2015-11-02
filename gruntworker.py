@@ -5,12 +5,12 @@ from sys import exit  # pylint: disable=W0622
 from subprocess import check_call, check_output, DEVNULL, CalledProcessError
 from shutil import copy, rmtree
 from os import remove
-from os.path import join as pathjoin
+from os.path import join as pathjoin, exists
 from datetime import datetime
 
 SHRINKWRAP_FILENAME = 'npm-shrinkwrap.json'
-SHRINKWRAP_DIR = 'test-infra'
-SHRINKWRAP_FILEPATH = pathjoin(SHRINKWRAP_DIR, SHRINKWRAP_FILENAME)
+SHRINKWRAP_DIRS = ['test-infra', 'grunt']
+SHRINKWRAP_FILEPATHS = [pathjoin(directory, SHRINKWRAP_FILENAME) for directory in SHRINKWRAP_DIRS]
 
 
 def log(*args):
@@ -59,8 +59,18 @@ def update_master(to_commitish=b'FETCH_HEAD'):
 
 
 def update_npm():
+    found = False
+    shrinkwrap_filepath = None
+    for shrinkwrap_filepath in SHRINKWRAP_FILEPATHS:
+        if exists(shrinkwrap_filepath):
+            found = True
+            break
+    if not found:
+        log("No shrinkwrap file found!")
+        log("Failed!")
+        exit(1)
     try:
-        copy(SHRINKWRAP_FILEPATH, SHRINKWRAP_FILENAME)
+        copy(shrinkwrap_filepath, SHRINKWRAP_FILENAME)
     except (OSError, IOError):
         log("Error copying shrinkwrap file into place!")
         log("Failed!")
@@ -85,7 +95,7 @@ def update_npm():
     finally:
         try:
             remove(SHRINKWRAP_FILENAME)
-        except Exception:
+        except Exception: # pylint: disable=W0703
             log("Error deleting copy of shrinkwrap file!")
 
 
