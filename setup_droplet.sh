@@ -28,9 +28,9 @@ aptitude install nodejs
 apt-get -y --no-install-recommends install openssh-client git python3 python3-dev # other dependencies
 npm install -g grunt-cli # dependency
 git clone https://github.com/twbs/gruntworker.git ~/gruntworker
-cp ~/gruntworker/gruntworker.sh /usr/local/bin/
 cp ~/gruntworker/gruntworker.py /usr/local/bin/
-chmod u=rwx,go=rx /usr/local/bin/gruntworker.*
+cp ~/gruntworker/gruntworker-*.sh /usr/local/bin/
+chmod u=rwx,go=rx /usr/local/bin/gruntworker*
 useradd -m gruntworker
 
 # setup SSH keys

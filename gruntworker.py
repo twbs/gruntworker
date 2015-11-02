@@ -29,33 +29,34 @@ def run_for_output(cmd):
     return check_output(cmd, input=b'')
 
 
-def reset_to_master_and_die():
-    log("Attempting to reset current checkout & branch to local master...")
+def reset_to_primary_and_die(primary_branch):
+    log("Attempting to reset current checkout & branch to local {}...".format(primary_branch))
     try:
-        run_expecting_success([b'git', b'checkout', b'-f', b'master'])
+        run_expecting_success([b'git', b'checkout', b'-f', primary_branch.encode('utf8')])
     except CalledProcessError:
-        log("Error forcibly checking out master; Failed!")
+        log("Error forcibly checking out {}; Failed!".format(primary_branch))
     exit(1)
 
 
-def fetch_origin():
+def fetch_origin(primary_branch):
     log("Fetching from origin...")
     try:
-        run_expecting_success([b'git', b'fetch', b'origin', b'+master'])
+        run_expecting_success([b'git', b'fetch', b'origin', ('+' + primary_branch).encode('utf8')])
     except CalledProcessError:
         log("Error fetching from origin; Failed!")
         exit(1)
 
 
-def update_master(to_commitish=b'FETCH_HEAD'):
-    log("Setting local master to {0}...".format(to_commitish.decode('utf8', 'replace')))
+def update_primary(primary_branch, to_commitish=b'FETCH_HEAD'):
+    primary_bytes = primary_branch.encode('utf8')
+    log("Setting local {0} to {1}...".format(primary_branch, to_commitish.decode('utf8', 'replace')))
     try:
         run_expecting_success([b'git', b'checkout', b'-q', b'-f', to_commitish])
-        run_expecting_success([b'git', b'branch', b'-f', b'master', to_commitish])
-        run_expecting_success([b'git', b'checkout', b'-q', b'-f', b'master'])
+        run_expecting_success([b'git', b'branch', b'-f', primary_bytes, to_commitish])
+        run_expecting_success([b'git', b'checkout', b'-q', b'-f', primary_bytes])
     except CalledProcessError:
-        log("Error setting local master to {0}!".format(to_commitish))
-        reset_to_master_and_die()
+        log("Error setting local {0} to {1}!".format(primary_branch, to_commitish))
+        reset_to_primary_and_die(primary_branch)
 
 
 def update_npm():
@@ -123,19 +124,19 @@ def get_modified_files():
     return [line[3:] for line in lines if line[:2] == b' M']
 
 
-def push_or_err():
+def push_or_err(primary_branch):
     log("Pushing to origin...")
     try:
-        run_expecting_success([b'git', b'push', b'origin', b'master'])
+        run_expecting_success([b'git', b'push', b'origin', primary_branch.encode('utf8')])
     except CalledProcessError:
         log("Error pushing to origin!")
         raise
 
 
-def main():
+def main(primary_branch):
     orig_commit_sha = get_head_commit_sha()
-    fetch_origin()
-    update_master()
+    fetch_origin(primary_branch)
+    update_primary(primary_branch)
     post_fetch_commit_sha = get_head_commit_sha()
     if post_fetch_commit_sha == orig_commit_sha:
         log("Fetch didn't change HEAD commit; Done.")
@@ -149,14 +150,19 @@ def main():
             return
         run_expecting_success([b'git', b'add', b'--'] + modified_files)
         run_expecting_success([b'git', b'commit', b'-m', b"automatic `grunt dist`\n\n[ci skip]"])
-        push_or_err()
+        push_or_err(primary_branch)
     except Exception:  # pylint: disable=W0703
-        log("Resetting master branch & checkout back to commit {} ...".format(post_fetch_commit_sha))
-        update_master(to_commitish=post_fetch_commit_sha)
+        log("Resetting primary branch & checkout back to commit {} ...".format(post_fetch_commit_sha))
+        update_primary(primary_branch, to_commitish=post_fetch_commit_sha)
         log("Failed!")
     else:
         log("Successfully pushed changes; Done.")
 
 
 if __name__ == '__main__':
-    main()
+    from sys import argv
+    argv.pop()
+    if len(argv) != 1:
+        log("USAGE: gruntworker.py <primary-branch-name>")
+        exit(2)
+    main(argv[0])

@@ -1,1 +1,2 @@
-*/10 * * * * gruntworker /usr/local/bin/gruntworker.sh 2>&1 >> /var/log/gruntworker.log
+*/10 * * * * gruntworker /usr/local/bin/gruntworker-v3.sh 2>&1 >> /var/log/gruntworker-v3.log
+*/10 * * * * gruntworker /usr/local/bin/gruntworker-v4.sh 2>&1 >> /var/log/gruntworker-v4.log
