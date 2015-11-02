@@ -1,1 +1,1 @@
-*/10 * * * * root docker run --rm=true gruntworker 2>&1 >> /var/log/gruntworker.log
+*/10 * * * * gruntworker /usr/local/bin/gruntworker.sh 2>&1 >> /var/log/gruntworker.log
