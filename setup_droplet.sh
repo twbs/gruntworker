@@ -19,8 +19,16 @@ ufw allow www # not necessary for gruntworker itself
 ufw enable
 ufw status verbose
 
-# setup Docker; written against Docker v1.2.0
-docker rmi gruntworker
-docker build --tag gruntworker . 2>&1 | tee docker.build.log
+# install Node.js
+aptitude install build-essential # for native addons
+curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+DISTRO=$(lsb_release -c -s)
+echo 'deb https://deb.nodesource.com/node_5.x ${DISTRO} main'      > /etc/apt/sources.list.d/nodesource.list
+echo 'deb-src https://deb.nodesource.com/node_5.x ${DISTRO} main' >> /etc/apt/sources.list.d/nodesource.list
+aptitude update
+aptitude install nodejs
+aptitude install nodejs-legacy # out of compatibility paranoia, though I philosophically agree with Debian here
+
+# setup gruntworker itself
 cp ./gruntworker.crontab /etc/cron.d/gruntworker
 restart cron # until upstart goes away
