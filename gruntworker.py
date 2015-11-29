@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from sys import exit  # pylint: disable=W0622
+from sys import exit, argv as _argv  # pylint: disable=W0622
 from subprocess import check_call, check_output, DEVNULL, CalledProcessError
 from shutil import copy, rmtree
 from os import remove
@@ -96,7 +96,7 @@ def update_npm():
     finally:
         try:
             remove(SHRINKWRAP_FILENAME)
-        except Exception: # pylint: disable=W0703
+        except Exception:  # pylint: disable=W0703
             log("Error deleting copy of shrinkwrap file!")
 
 
@@ -160,9 +160,8 @@ def main(primary_branch):
 
 
 if __name__ == '__main__':
-    from sys import argv
-    argv.pop()
-    if len(argv) != 1:
+    _argv.pop()
+    if len(_argv) != 1:
         log("USAGE: gruntworker.py <primary-branch-name>")
         exit(2)
-    main(argv[0])
+    main(_argv[0])
