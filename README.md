@@ -1,4 +1,4 @@
-Gruntworker
+Gruntworker [![Build Status](https://travis-ci.org/twbs/gruntworker.svg?branch=master)](https://travis-ci.org/twbs/gruntworker)
 ===========
 
 Gruntworker ([@twbs-grunt](https://github.com/twbs-grunt)) periodically grabs changes, runs build scripts, and pushes built changes back to the Bootstrap git repo.
